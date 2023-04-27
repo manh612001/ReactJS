@@ -2,11 +2,12 @@ import { Button, Container } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import * as StudentService from "../../Service/StudentService";
 import { faPlus,faPenToSquare,faTrash } from "@fortawesome/free-solid-svg-icons";  
 import {Modal,Form} from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import request from "../../api/request";
 import "./Student.css";
 import Header from "../Header";
 
@@ -14,14 +15,20 @@ import Header from "../Header";
 
 
 const Student = () => {
+  const getData = async() =>{
+    const result = await StudentService.getStudents();
+    setStudents(result);
+    return result;
+  }
+  
   const [students, setStudents] = useState([]);
   const [modalShow, setModalShow] = useState(false);
-  const getData = async () => {
-    const url = "https://localhost:7226/api/Student/StudentWithClass";
-    const {data} = await axios.get(url);
-    setStudents(data);
-    console.log(data)
-  };
+  // const getData = async () => {
+    
+  //   const {data} = await request.get('Student/StudentWithClass');
+  //   setStudents(data);
+  //   console.log(data)
+  // };
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -36,12 +43,9 @@ const Student = () => {
       phoneNumber:Yup.string().required("PhoneNumber not null")
     }),
     onSubmit: values => {
-      console.log(values);
-      // Handle form submission logic here
-      const url = "https://localhost:7226/api/Student/Add";
-      axios.post(url,formik.values)
+      StudentService.Add(formik.values)
       .then(res=>{
-        alert(res.data);
+        alert(res);
         getData();
         setModalShow(false)
         formik.values.name = '';
@@ -59,13 +63,13 @@ const Student = () => {
   const handleDel = async (id:any) =>{
     if(window.confirm("Are you sure want to delete?"))
     {
-      await axios.delete(`https://localhost:7226/api/Student/Delete/${id}`)
+      StudentService.Delete(id)
       .then(res=>{
-        alert(res.data);
+        alert(res);
         getData();
       })
       .catch(error =>{
-        console.log(error);
+        alert(error);
       })
     }else return;
   }

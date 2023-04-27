@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import "./SignUp.css";
-import axios from "axios";
+import * as AccountService from "../../Service/AccountService";
 import { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import request from "../../api/request";
 
 const SignUp = () => {
   const [typePassword, setTypePassword] = useState("password");
@@ -44,20 +45,17 @@ const SignUp = () => {
     onSubmit: (values) => {
       console.log(values);
       // Handle form submission logic here
-      const url = "https://localhost:7226/api/Account/SignUp";
-      axios
-        .post(url, formik.values)
-        .then((res) => {
-          alert(res.data);
-          formik.values.Username = "";
-          formik.values.Password = "";
-          formik.values.Email = "";
-          formik.values.PasswordConfirm = "";
-        })
-        .catch((error) => {
-          alert(error.response.data);
-        });
-      
+      AccountService.SignUp(formik.values)
+      .then((res) => {
+        alert(res.data);
+        formik.values.Username = "";
+        formik.values.Password = "";
+        formik.values.Email = "";
+        formik.values.PasswordConfirm = "";
+      })
+      .catch((error) => {
+        alert(error.response.data);
+      });
     },
   });
 

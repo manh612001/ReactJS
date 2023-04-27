@@ -1,11 +1,12 @@
 import { Button, Form } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import axios from "axios";
+import * as AccountService from "../../Service/AccountService";
 import { useSignIn } from "react-auth-kit";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./Login.css";
+
 
 
 const Login= () => {
@@ -31,8 +32,8 @@ const Login= () => {
         onSubmit: values => {
           console.log(values);
           // Handle form submission logic here
-          const url = "https://localhost:7226/api/Account/Login";
-          axios.post(url,formik.values)
+          
+          AccountService.Login(formik.values)
           .then(res=>{
             signIn({
                 token:res.data,

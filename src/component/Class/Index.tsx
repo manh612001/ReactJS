@@ -17,13 +17,14 @@ import {
 import "./index.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import * as ClassService from "../../Service/ClassService";
 import Select from "react-select";
 
 import makeAnimated from "react-select/animated";
 
 import "./index.css";
 import Header from "../Header";
+import request from "../../api/request";
 
 const Class = () => {
   interface Option {
@@ -45,21 +46,20 @@ const Class = () => {
   const animatedComponents = makeAnimated();
 
   const getData = async () => {
-    const url = "https://localhost:7226/api/Class/Index";
-    const { data } = await axios.get(url);
+    const data  = await ClassService.GetAll();
     setListClass(data);
   };
-  const handleDelete = async (id: any) => {
+  const handleDelete = async(id: any) => {
     if (window.confirm("Are you sure want to delete?")) {
-      await axios
-        .delete(`https://localhost:7226/api/Class/Delete/${id}`)
-        .then((res) => {
-          getData();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else return;
+      ClassService.Delete(id)
+      .then((res) => {
+        getData();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    }
+    return;
   };
 
   const resultStudent: Student[] = students;
@@ -69,9 +69,7 @@ const Class = () => {
   }));
   const options: Option[] = resultOption;
   const getStudent = () => {
-    const url = "https://localhost:7226/api/Student/Students";
-    axios
-      .get(url)
+    request.get('Student/Students')
       .then((res) => {
         setStudents(res.data);
       })
@@ -92,11 +90,8 @@ const Class = () => {
   const Id = 0;
 
   const handleAddClass = () => {
-    // console.log("Test",{Name,t})
-
-    console.log({ Id, name, studentIds });
-    axios
-      .post("https://localhost:7226/api/Class/Add", { Id, name, studentIds })
+    const addClass = async() =>{
+      ClassService.Add({ Id, name, studentIds })
       .then((res) => {
         alert(res.data);
         getData();
@@ -107,6 +102,8 @@ const Class = () => {
       .catch((error) => {
         console.log(error);
       });
+    }
+    addClass(); 
   };
 
   useEffect(() => {

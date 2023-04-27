@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Form, Button, Breadcrumb, Container } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import Header from "../Header";
+import * as StudentService from "../../Service/StudentService";
 import "./Student.css";
+import request from "../../api/request";
 const EditStudent = () => {
   const navigate = useNavigate();
 
@@ -18,9 +19,7 @@ const EditStudent = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
 
   const getStudent = async () => {
-    const { data } = await axios.get(
-      `https://localhost:7226/api/Student/Detail/${id}`
-    );
+    const { data } = await StudentService.GetById(id);
     setName(data.name);
     setDob(data.dob.split("T")[0]);
     setAddress(data.address);
@@ -50,17 +49,16 @@ const EditStudent = () => {
     onSubmit: (values) => {
       console.log(values);
       // Handle form submission logic here
-      axios
-        .put(`https://localhost:7226/api/Student/Edit/${id}`, formik.values)
-        .then((res) => {
-          navigate("/Student");
-          alert(res.data);
-          console.log(res);
-          getStudent();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      StudentService.Edit(`Student/${id}`,formik.values)
+      .then((res) => {
+        navigate("/Student");
+        alert(res.data);
+        console.log(res);
+        getStudent();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
   });
   console.log(formik.values);

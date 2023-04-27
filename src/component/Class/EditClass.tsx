@@ -1,13 +1,15 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import "./index.css";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Breadcrumb, Button, Container, Form } from "react-bootstrap";
 import Select from "react-select";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHouse } from "@fortawesome/free-solid-svg-icons";
 import makeAnimated from "react-select/animated";
+import * as ClassService from "../../Service/ClassService";
+import * as StudentService from "../../Service/StudentService";
 import Header from "../Header";
+
 const EditClass = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,23 +20,19 @@ const EditClass = () => {
   const animatedComponents = makeAnimated();
 
   const getClass = async () => {
-    const { data } = await axios.get(
-      `https://localhost:7226/api/Class/GetById/${id}`
-    );
+    const data = await ClassService.GetById(id);
     setName(data.name);
     setStudentIds(data.studentIds);
     console.log(data);
   };
   const getStudent = () => {
-    const url = "https://localhost:7226/api/Student/Students";
-    axios
-      .get(url)
-      .then((res) => {
-        setStudents(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    StudentService.GetAll()
+    .then((res) => {
+      setStudents(res);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
   };
   type Option = {
     value: number;
@@ -52,12 +50,7 @@ const EditClass = () => {
     value: item.id,
     label: item.name,
   }));
-  const studentSelected: Student[] = studentIds;
-  const optionSelected: Option[] = studentSelected.map((item) => ({
-    value: item.id,
-    label: item.name,
-  }));
-  console.log(optionSelected);
+  
 
   const [studentList, setStudentList] = useState<Option[]>([
     { value: 3, label: "Student 1" },
@@ -77,16 +70,10 @@ const EditClass = () => {
     address: "string",
   }));
   const handleSubmit = () => {
-    console.log({ id, name, StudentIds });
-    axios
-      .put(`https://localhost:7226/api/Class/Edit/${id}`, {
-        id,
-        name,
-        StudentIds,
-      })
+    ClassService.Edit(id, { id, name, StudentIds })
       .then((res) => {
         navigate("/Class");
-        alert(res.data);
+        alert(res);
         console.log(res);
         getStudent();
       })
@@ -114,7 +101,7 @@ const EditClass = () => {
             <h2 className="text-center">Edit Class</h2>
             <Form.Group>
               <Form.Label>Class</Form.Label>
-              <Form.Control name="Class" value={name} />
+              <Form.Control name="Class" value={name} onChange={(e) =>setName(e.target.value)} />
             </Form.Group>
             <Form.Group>
               <Form.Label>Students:</Form.Label>
