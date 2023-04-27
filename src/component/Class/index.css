@@ -1,0 +1,28 @@
+table{
+    margin-top: 15px;
+}
+
+#btnEdit{
+    color:white;
+    background: linear-gradient(to right, #74b9ff, #0984e3);
+    border: none;
+}
+#btnDel{
+    color: white;
+    background: linear-gradient(to right, #e74c3c, #c0392b);
+    border: none;
+}
+#btnSave{
+    color: white;
+    background: linear-gradient(to right, #2ecc71, #27ae60);
+    border: none;
+}
+
+#boxEditClass form{
+    border: 1px solid rgba(0,0,0,.125);
+    width: 40%;
+    padding: 40px;
+    border-radius: 10px;
+    min-width: 450px;
+    box-shadow: 0 3px 3px 0 grey;
+}

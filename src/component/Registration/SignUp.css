@@ -1,0 +1,13 @@
+.box-signup{
+    border: 1px solid gray;
+    border-radius: 10px;
+    box-shadow: 10px 8px 3px 0 grey;
+    width:40%;
+    background: white;
+
+}
+.btn-sec{
+    color:white;
+    background: linear-gradient(to right, #74b9ff, #0984e3);
+    border: none;
+}

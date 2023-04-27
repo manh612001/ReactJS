@@ -1,15 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import reportWebVitals from './reportWebVitals';
+import {BrowserRouter as Router} from 'react-router-dom';
+import App from './App';
+import { AuthProvider, RequireAuth } from 'react-auth-kit';
+
+
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App />
+    <AuthProvider
+      authType={"cookie"}
+      authName={"_auth"}
+      cookieDomain={window.location.hostname}
+      cookieSecure={false}
+    >
+      <Router>
+        <App/>
+      </Router>
+    </AuthProvider>
   </React.StrictMode>
 );
 
